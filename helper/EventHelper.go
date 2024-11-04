@@ -627,7 +627,15 @@ func (dockerBuildConfig *DockerBuildConfig) GetProvenanceFlag() string {
 	return "--provenance=false"
 }
 func (dockerBuildConfig *DockerBuildConfig) CheckForBuildX() bool {
-	return dockerBuildConfig.TargetPlatform != "" || dockerBuildConfig.UseBuildx
+	type BuildxFlag struct {
+		DISABLE_BUILDX bool `env:"DISABLE_BUILDX" envDefault:"false"`
+	}
+	buildxFlg := BuildxFlag{}
+	err := env.Parse(buildxFlg)
+	if err != nil {
+		log.Println(util.DEVTRON, "error in parsing disable buildx flag", err)
+	}
+	return (dockerBuildConfig.TargetPlatform != "" || dockerBuildConfig.UseBuildx) && !buildxFlg.DISABLE_BUILDX
 }
 
 func (dockerBuildConfig *DockerBuildConfig) CheckForBuildXK8sDriver() (bool, []map[string]string) {
