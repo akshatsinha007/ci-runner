@@ -30,7 +30,7 @@ RUN (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.27.0/pac
 COPY --from=build-env /go/bin/cirunner .
 COPY ./ssh-config /root/.ssh/config
 RUN chmod 644 /root/.ssh/config
-RUN echo '{"registry-mirrors": ["https://public.ecr.aws/vend"]}' >> /etc/docker/daemon.json
+RUN echo '{"registry-mirrors": ["https://public.ecr.aws/vend"]}' > /etc/docker/daemon.json
 
 # passing PARENT_MODE as argument to cirunner as default behavior
 ENTRYPOINT ["./cirunner", "PARENT_MODE"]
