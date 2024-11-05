@@ -21,7 +21,6 @@ RUN pip3 install awscli
 RUN apk --purge -v del py-pip
 RUN rm /var/cache/apk/*
 COPY --from=docker/compose:latest /usr/local/bin/docker-compose /usr/bin/docker-compose
-
 COPY ./buildpack.json /buildpack.json
 COPY ./git-ask-pass.sh /git-ask-pass.sh
 RUN chmod +x /git-ask-pass.sh
@@ -31,6 +30,7 @@ RUN (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.27.0/pac
 COPY --from=build-env /go/bin/cirunner .
 COPY ./ssh-config /root/.ssh/config
 RUN chmod 644 /root/.ssh/config
+RUN echo '{"registry-mirrors": ["https://public.ecr.aws/vend"]}' >> /etc/docker/daemon.json
 
 # passing PARENT_MODE as argument to cirunner as default behavior
 ENTRYPOINT ["./cirunner", "PARENT_MODE"]
